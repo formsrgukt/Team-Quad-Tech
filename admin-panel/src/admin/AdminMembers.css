@@ -1,0 +1,14 @@
+.admin-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.admin-header-row h3 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+/* Inheriting standard admin form/table styles from AdminProjects.css */
+/* To keep things clean, they share the .form-panel, .table-panel, .form-group etc classes */
