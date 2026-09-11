@@ -57,6 +57,16 @@ function ask(questionText, defaultAnswer = '') {
 async function main() {
   console.log(`\n${colors.cyan}${colors.bright}🚀 Team Quad Tech - Automated Git Push${colors.reset}\n`);
 
+  // Ensure we are working from the repository root
+  try {
+    const gitRoot = execSync('git rev-parse --show-toplevel', { encoding: 'utf-8' }).trim();
+    if (gitRoot && gitRoot !== process.cwd()) {
+      process.chdir(gitRoot);
+    }
+  } catch (e) {
+    // proceed
+  }
+
   // Parse command line arguments
   const rawArgs = process.argv.slice(2);
   const remainingArgs = [];
