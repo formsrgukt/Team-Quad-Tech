@@ -30,21 +30,25 @@
 }
 
 .hero-title {
-  font-size: 4rem;
-  margin-bottom: 1.25rem;
+  font-size: clamp(3rem, 5vw, 4.5rem);
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  line-height: 1.1;
+  letter-spacing: -1px;
 }
 
 .hero-subtitle {
-  font-size: 1.1rem;
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
   color: var(--text-secondary);
-  max-width: 500px;
-  margin-bottom: 2rem;
-  font-weight: 400;
+  max-width: 600px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.7;
 }
 
-.hero-actions {
+.hero-cta {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
+  justify-content: center;
 }
 
 .btn {
@@ -72,6 +76,30 @@
 
 .secondary-btn:hover {
   background-color: var(--panel-bg);
+}
+
+.hero-visual.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-top: 80px; /* Offset for navbar */
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  pointer-events: none;
 }
 
 .hero-visual {
