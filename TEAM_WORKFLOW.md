@@ -48,24 +48,19 @@ git checkout -b add-my-new-feature
 **Step 3: Write your code!**
 Open the project in VS Code, make your changes, save your files, and test them in your browser.
 
-**Step 4: Save & Push your changes (The Easy 1-Step Way 🚀)**
-We created an automated command that stages, commits, and pushes your changes all in one step:
+**Step 4: Save (Commit) your changes**
+When you are happy with your code, save it to git.
 ```bash
-npm run push
-```
-*(Or pass your commit message directly: `npm run push "Added hero section"` or `./push.sh "Added hero section"`)*
-
----
-
-### Alternative: Manual Git Commands (If you prefer manual steps)
-```bash
-# 1. Add all changed files
+# This adds all your changed files
 git add .
 
-# 2. Commit with explanation
+# This commits them with a message explaining what you did
 git commit -m "Added a new button to the hero section"
+```
 
-# 3. Push to GitHub
+**Step 5: Upload (Push) your branch to GitHub**
+Send your branch to the cloud so the rest of the team can see it.
+```bash
 git push -u origin add-my-new-feature
 ```
 
