@@ -26,8 +26,10 @@ function runInherit(cmd, args) {
   return result.status === 0;
 }
 
+let autoYes = false;
+
 function ask(questionText, defaultAnswer = '') {
-  if (!process.stdin.isTTY) {
+  if (autoYes || !process.stdin.isTTY) {
     return Promise.resolve(defaultAnswer);
   }
   const rl = readline.createInterface({
@@ -54,6 +56,18 @@ function ask(questionText, defaultAnswer = '') {
 
 async function main() {
   console.log(`\n${colors.cyan}${colors.bright}🚀 Team Quad Tech - Automated Git Push${colors.reset}\n`);
+
+  // Parse command line arguments
+  const rawArgs = process.argv.slice(2);
+  const remainingArgs = [];
+
+  for (const arg of rawArgs) {
+    if (arg === '-y' || arg === '--yes') {
+      autoYes = true;
+    } else {
+      remainingArgs.push(arg);
+    }
+  }
 
   // 1. Verify git is installed
   const gitVersion = run('git --version');
@@ -96,13 +110,14 @@ async function main() {
   console.log(`📌 Current branch: ${colors.magenta}${colors.bright}${currentBranch}${colors.reset}`);
 
   // 4. Branch check if on main
-  if (currentBranch === 'main') {
+  if (currentBranch === 'main' && !autoYes) {
     console.log(`${colors.yellow}Notice: TEAM_WORKFLOW recommends working in a feature branch.${colors.reset}`);
     const branchChoice = await ask(
-      `Do you want to create a new feature branch? (y/N) [default: stay on main]: `
+      `Do you want to create a new feature branch? (y/N) [default: stay on main]: `,
+      'n'
     );
     if (branchChoice.toLowerCase() === 'y' || branchChoice.toLowerCase() === 'yes') {
-      const newBranchName = await ask(`Enter new branch name (e.g. feat-navbar): `);
+      const newBranchName = await ask(`Enter new branch name (e.g. feat-navbar): `, '');
       if (newBranchName) {
         const sanitized = newBranchName.replace(/\s+/g, '-');
         const branchCreated = runInherit('git', ['checkout', '-b', sanitized]);
@@ -117,13 +132,18 @@ async function main() {
   // 5. Check git status
   const statusOutput = run('git status --porcelain');
   if (!statusOutput) {
-    console.log(`\n${colors.green}✨ Working directory clean. No changes to commit.${colors.reset}`);
-    const shouldPushAnyway = await ask(`Push current branch to GitHub anyway? (y/N): `);
-    if (shouldPushAnyway.toLowerCase() !== 'y') {
-      process.exit(0);
+    console.log(`\n${colors.green}✨ Working directory clean. No local uncommitted changes.${colors.reset}`);
+    const ahead = run('git rev-list --count origin/' + currentBranch + '..' + currentBranch);
+    if (ahead && parseInt(ahead, 10) > 0) {
+      console.log(`${colors.cyan}Branch is ahead by ${ahead} commit(s). Ready to push.${colors.reset}`);
+    } else {
+      const shouldPushAnyway = await ask(`Push current branch to GitHub anyway? (y/N): `, 'n');
+      if (shouldPushAnyway.toLowerCase() !== 'y' && !autoYes) {
+        process.exit(0);
+      }
     }
   } else {
-    console.log(`\n${colors.cyan}📂 Changed files:${colors.reset}`);
+    console.log(`\n${colors.cyan}📂 Changed files detected:${colors.reset}`);
     console.log(statusOutput);
 
     // 6. Stage changes
@@ -131,12 +151,10 @@ async function main() {
     runInherit('git', ['add', '-A']);
 
     // 7. Get commit message
-    // If passed via command-line args, e.g.: npm run push "commit message"
-    const args = process.argv.slice(2).join(' ').trim();
-    let commitMessage = args;
+    let commitMessage = remainingArgs.join(' ').trim();
 
     if (!commitMessage) {
-      commitMessage = await ask(`\n${colors.bright}Enter commit message (or press enter for default): ${colors.reset}`);
+      commitMessage = await ask(`\n${colors.bright}Enter commit message (or press enter for default): ${colors.reset}`, '');
     }
 
     if (!commitMessage) {
@@ -151,7 +169,7 @@ async function main() {
       console.error(`${colors.red}❌ Git commit failed.${colors.reset}`);
       process.exit(1);
     }
-    console.log(`${colors.green}✓ Changes committed!${colors.reset}`);
+    console.log(`${colors.green}✓ Changes committed successfully!${colors.reset}`);
   }
 
   // 9. Push to GitHub
@@ -159,7 +177,7 @@ async function main() {
   const pushSuccess = runInherit('git', ['push', '-u', 'origin', currentBranch]);
 
   if (pushSuccess) {
-    console.log(`\n${colors.green}${colors.bright}🎉 SUCCESS! Your changes are pushed to GitHub!${colors.reset}`);
+    console.log(`\n${colors.green}${colors.bright}🎉 SUCCESS! Your changes have been pushed to GitHub!${colors.reset}`);
     if (currentBranch !== 'main') {
       console.log(`\n🔗 Create Pull Request here:`);
       console.log(`${colors.cyan}https://github.com/formsrgukt/Team-Quad-Tech/compare/${currentBranch}?expand=1${colors.reset}\n`);
@@ -169,8 +187,11 @@ async function main() {
     }
   } else {
     console.log(`\n${colors.yellow}⚠️ Push encountered an issue.${colors.reset}`);
-    console.log(`If GitHub asked for a password, note that GitHub requires a Personal Access Token (PAT) instead of your password.`);
-    console.log(`Create token at: https://github.com/settings/tokens`);
+    console.log(`\n💡 GitHub Authentication Tips:`);
+    console.log(`1. GitHub requires a Personal Access Token (PAT) instead of your account password.`);
+    console.log(`2. Generate a token at: https://github.com/settings/tokens (select 'repo' scope).`);
+    console.log(`3. When prompted, enter your GitHub username and paste your token as the password.`);
+    console.log(`4. Because credential.helper is active, Git will remember your credentials next time!\n`);
   }
 }
 
