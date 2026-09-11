@@ -214,3 +214,92 @@ button {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(99, 102, 241, 0.4);
 }
+
+/* Light Mode Adaptations */
+body.light-mode {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f5f9;
+  
+  --panel-bg: rgba(255, 255, 255, 0.88);
+  --panel-hover-bg: rgba(255, 255, 255, 0.98);
+  --panel-border: rgba(0, 0, 0, 0.08);
+  --panel-border-hover: rgba(99, 102, 241, 0.35);
+  --panel-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --panel-shadow-hover: 0 16px 36px -12px rgba(99, 102, 241, 0.15), 0 0 0 1px rgba(99, 102, 241, 0.25);
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+
+  background-color: var(--bg-primary);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.06) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(59, 130, 246, 0.03) 0px, transparent 60%);
+}
+
+body.light-mode .admin-sidebar {
+  background: rgba(255, 255, 255, 0.9);
+  border-right-color: rgba(0, 0, 0, 0.07);
+}
+
+body.light-mode .admin-header {
+  background: rgba(255, 255, 255, 0.85);
+  border-bottom-color: rgba(0, 0, 0, 0.07);
+}
+
+body.light-mode .theme-toggle-track {
+  background: #e2e8f0;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+body.light-mode .form-group input,
+body.light-mode .form-group textarea,
+body.light-mode .search-box {
+  background-color: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #0f172a;
+}
+
+body.light-mode .form-group input:focus,
+body.light-mode .form-group textarea:focus,
+body.light-mode .search-box:focus-within {
+  background-color: #ffffff;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+body.light-mode .admin-table thead tr {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+body.light-mode .admin-table tbody tr {
+  border-bottom-color: rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .admin-table tbody tr:hover {
+  background: rgba(99, 102, 241, 0.03);
+}
+
+body.light-mode .admin-nav-link:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: #0f172a;
+}
+
+body.light-mode .admin-toast {
+  background: rgba(255, 255, 255, 0.95);
+  color: #0f172a;
+  border-color: rgba(99, 102, 241, 0.3);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+body.light-mode .admin-user-profile {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+body.light-mode .sidebar-footer-card {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.05);
+}
